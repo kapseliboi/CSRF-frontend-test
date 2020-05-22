@@ -17,14 +17,6 @@ function stringToBool(value: string | undefined): boolean {
     return value === 'true';
 }
 
-function decodeBase64(value: string) {
-    return Buffer.from(value, 'base64');
-}
-
-function stringToInt(value: string): number {
-    return parseInt(value, 10);
-}
-
 const HTTPS_ONLY = stringToBool(optionalEnv('HTTPS_ONLY'));
 
 export default {
