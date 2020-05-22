@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
-import { Layout, Menu, Avatar, Button } from 'antd';
+import React from 'react';
+import { Layout, Menu, Avatar, Button, Typography } from 'antd';
+import { User } from '../api/types';
+import { logout } from '../api';
+import { useHistory } from 'react-router-dom';
 
 const { Header } = Layout;
+const { Text } = Typography;
 
 interface Props {
-    
+    currentUser: User;
+    setUser: (value: React.SetStateAction<User | undefined>) => void;
 }
 
-export default function() {
+export default function(props: Props) {
+    const history = useHistory();
+    async function doLogout() {
+        await logout();
+        const location = history.location;
+        location.pathname = "/";
+        history.push(location);
+        props.setUser(undefined);
+    }
     return (
         <Layout>
             <Header>
@@ -17,7 +30,10 @@ export default function() {
                     </Menu.Item>
                     <Menu.Item key="user">
                         <Avatar />
-                        
+                        <Text>{props.currentUser.username}</Text>
+                        <Button type="primary" htmlType="button" onClick={doLogout}>
+                            Sign out
+                        </Button>
                     </Menu.Item>
                 </Menu>
 

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import NoLoginFrontPage from './pages/NoLoginFrontPage';
 import RegisterPage from './pages/RegisterPage';
+import FrontPage from './pages/FrontPage';
 import Navbar from './components/Navbar';
 import { checkLogin } from './api';
 import { User } from './api/types';
@@ -41,10 +42,12 @@ function App() {
       ) : (
         <>
           <Route path="*">
-            <Navbar />
+            <Navbar currentUser={user} setUser={setUser} />
           </Route>
           <Switch>
-
+            <Route path="*">
+              <FrontPage currentUser={user}/>
+            </Route>
           </Switch>
         </>
       )}

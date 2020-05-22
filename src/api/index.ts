@@ -1,6 +1,6 @@
 import axios from 'axios';
 import config from '../config';
-import { User } from './types';
+import { User, Post } from './types';
 
 axios.defaults.baseURL = config.API_URL;
 axios.defaults.xsrfCookieName = config.CSRF_COOKIE_NAME;
@@ -30,5 +30,68 @@ export async function checkLogin(): Promise<User | undefined> {
         return response.data;
     } catch (e) {
         console.log(`Something is wrong with API: ${e}`);
+    }
+}
+
+export async function logout(): Promise<void> {
+    try {
+        await axios.post("/auth/logout");
+    } catch (e) {
+        console.log(`Something went wrong with logout: ${e}`);
+    }
+}
+
+export async function getPosts(): Promise<Post[] | null> {
+    try {
+        const response = await axios.get<Post[]>("/post");
+        if (response.status !== 200) {
+            console.log(`Something went wrong with the API, status: ${response.status}`);
+            return [];
+        }
+        return response.data;
+    } catch (e) {
+        console.log(e);
+        return null;
+    }
+}
+
+export async function createPost(title: string, text: string): Promise<Post | null> {
+    try {
+        const response = await axios.post<Post>('/post', { title, text });
+        if (response.status !== 200) {
+            console.log(`Something went wrong with the API, status: ${response.status}`);
+            return null;
+        }
+        return response.data;
+    } catch (e) {
+        console.log(e);
+        return null;
+    }
+}
+
+export async function editPost(id: number, title: string, text: string): Promise<Post | null> {
+    try {
+        const response = await axios.put<Post>(`/post/${id}`, { text, title });
+        if (response.status !== 200) {
+            console.log(`Something went wrong with the API, status: ${response.status}`);
+            return null;
+        }
+        return response.data;
+    } catch (e) {
+        console.log(e);
+        return null;
+    }
+}
+
+export async function deletePost(id: number): Promise<boolean> {
+    try {
+        const response = await axios.delete(`/post/${id}`);
+        if (response.status !== 204) {
+            return false;
+        }
+        return true;
+    } catch (e) {
+        console.log(`Something went wrong with API: ${e}`);
+        return false;
     }
 }
