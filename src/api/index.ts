@@ -15,9 +15,26 @@ export async function login(usernameOrEmail: string, password: string): Promise<
         if (response.status === 401) {
             return undefined;
         } else if (response.status !== 200) {
+            console.log(`Something went wrong with the API, status: ${response.status}`);
             return null;
         }
         return response.data;
+    } catch (e) {
+        console.log(`Something is wrong with API: ${e}`);
+        return null;
+    }
+}
+
+export async function register(username: string, email: string, password: string): Promise<boolean | null> {
+    try {
+        const response = await axios.post('/auth/register', { username, email, password });
+        if (response.status === 409) {
+            return false;
+        } else if (response.status !== 201) {
+            console.log(`Something went wrong with the API, status: ${response.status}`);
+            return null;
+        }
+        return true;
     } catch (e) {
         console.log(`Something is wrong with API: ${e}`);
         return null;
